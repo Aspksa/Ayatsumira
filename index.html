@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayatsumira — личный помощник автора</title>
+<meta name="description" content="Ayatsumira — личный помощник автора: планирование, тексты, идеи и рутина на автопилоте.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3EC;
+    --card:#EBEAE3;
+    --input:#D7D6CF;
+    --muted:#8D8C88;
+    --ink:#000000;
+    --paper:#FFFFFF;
+    --accent:#F4BB40;
+    --ok:#2F9E44;
+    --busy:#E8590C;
+    --wait:#7048E8;
+    --font-display:'Fraunces','Georgia','Times New Roman',serif;
+    --font-body:'Inter','Segoe UI','Arial',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;border-radius:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent);color:var(--ink)}
+
+  h1,h2,h3,.display{
+    font-family:var(--font-display);
+    font-weight:500;
+    line-height:1.05;
+    letter-spacing:-0.02em;
+  }
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+  .eyebrow{
+    font-size:12px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  section{padding:160px 0}
+  @media (max-width:760px){section{padding:96px 0}}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:100;
+    background:var(--bg);
+    border-bottom:1px solid var(--ink);
+  }
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    height:64px;
+  }
+  .wordmark{
+    font-family:var(--font-display);
+    font-size:22px;font-weight:600;letter-spacing:-0.01em;
+    text-decoration:none;color:var(--ink);
+  }
+  .nav-links{display:flex;gap:32px;align-items:center}
+  .nav-links a{
+    font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink);text-decoration:none;position:relative;
+  }
+  .nav-links a:not(.btn)::after{
+    content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;
+    background:var(--accent);transition:width .25s ease;
+  }
+  .nav-links a:not(.btn):hover::after{width:100%}
+  @media (max-width:760px){.nav-links a:not(.btn){display:none}}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-block;
+    background:var(--ink);color:var(--paper);
+    font-family:var(--font-body);
+    font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    padding:16px 32px;border:1px solid var(--ink);
+    text-decoration:none;cursor:pointer;
+    transition:background .25s ease,color .25s ease;
+  }
+  .btn:hover{background:var(--accent);color:var(--ink);border-color:var(--ink)}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper)}
+  .btn.small{padding:11px 22px;font-size:12px}
+
+  /* ---------- hero ---------- */
+  .hero{padding:120px 0 140px;border-bottom:1px solid var(--ink)}
+  .hero-grid{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;align-items:start;
+  }
+  .hero-col-empty{display:flex;justify-content:center;padding-top:24px}
+  .hero h1{font-size:clamp(3rem,6.2vw,5.6rem);margin:20px 0 0}
+  .hero h1 em{
+    font-style:normal;
+    box-shadow:inset 0 -0.32em 0 var(--accent);
+  }
+  .hero-side p{
+    font-size:18px;line-height:1.6;color:#3a3a37;max-width:34ch;
+  }
+  .hero-side .btn-row{display:flex;gap:16px;margin-top:36px;flex-wrap:wrap}
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr}
+    .hero-col-empty{display:none}
+  }
+
+  /* ---------- emblem eye ---------- */
+  .emblem{width:min(220px,100%);height:auto}
+
+  /* ---------- tiles ---------- */
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-bottom:64px;flex-wrap:wrap}
+  .section-head h2{font-size:clamp(2.2rem,4vw,3.4rem);max-width:18ch}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  @media (max-width:760px){.tiles{grid-template-columns:1fr}}
+  .tile{
+    background:var(--card);padding:48px 40px 56px;
+    display:flex;flex-direction:column;gap:20px;
+    transition:background .25s ease;
+  }
+  .tile:hover{background:var(--input)}
+  .tile .num{
+    font-family:var(--font-display);font-size:15px;color:var(--muted);
+    letter-spacing:.06em;
+  }
+  .tile h3{font-size:26px}
+  .tile p{color:#3a3a37;max-width:44ch}
+  .tile .tag{
+    margin-top:auto;font-size:12px;font-weight:600;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);
+  }
+
+  /* ---------- demo ---------- */
+  .demo{background:var(--ink);color:var(--bg)}
+  .demo .eyebrow{color:var(--muted)}
+  .demo h2{font-size:clamp(2.2rem,4vw,3.4rem);max-width:20ch;margin-top:20px}
+  .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-top:0}
+  @media (max-width:900px){.demo-grid{grid-template-columns:1fr}}
+  .demo-copy p{color:#b9b7ae;font-size:18px;line-height:1.6;margin-top:24px;max-width:40ch}
+  .status{
+    display:inline-flex;align-items:center;gap:10px;margin-top:36px;
+    font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    border:1px solid #3c3b36;padding:10px 18px;color:#d8d6cc;
+  }
+  .status .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  .chat{
+    background:var(--card);color:var(--ink);
+    border:1px solid #000;
+    display:flex;flex-direction:column;
+    min-height:460px;
+  }
+  .chat-head{
+    display:flex;align-items:center;gap:12px;
+    padding:16px 20px;border-bottom:1px solid var(--ink);
+  }
+  .chat-head .avatar{
+    width:36px;height:36px;background:var(--ink);color:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);font-size:18px;font-weight:600;
+  }
+  .chat-head .name{font-weight:600;font-size:14px}
+  .chat-head .sub{font-size:12px;color:var(--muted)}
+  .chat-body{padding:24px 20px;display:flex;flex-direction:column;gap:14px;flex:1}
+  .msg{
+    max-width:82%;padding:12px 16px;font-size:14.5px;line-height:1.5;
+    opacity:0;transform:translateY(8px);
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  .msg.show{opacity:1;transform:translateY(0)}
+  .msg.user{align-self:flex-end;background:var(--ink);color:var(--paper)}
+  .msg.bot{align-self:flex-start;background:var(--paper);border:1px solid #00000022}
+  .msg .line{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .msg .line:first-child{margin-top:0}
+  .msg .sdot{width:7px;height:7px;border-radius:50%;flex:none}
+  .sdot.ok{background:var(--ok)} .sdot.busy{background:var(--busy)} .sdot.wait{background:var(--wait)}
+  .typing{
+    align-self:flex-start;display:none;gap:5px;padding:14px 18px;
+    background:var(--paper);border:1px solid #00000022;
+  }
+  .typing.on{display:flex}
+  .typing span{
+    width:6px;height:6px;border-radius:50%;background:var(--muted);
+    animation:bob 1s infinite;
+  }
+  .typing span:nth-child(2){animation-delay:.15s}
+  .typing span:nth-child(3){animation-delay:.3s}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}
+  .chat-foot{
+    padding:14px 20px;border-top:1px solid var(--ink);
+    display:flex;gap:12px;align-items:center;
+  }
+  .chat-foot .fake-input{
+    flex:1;background:var(--input);padding:12px 16px;
+    font-size:13px;color:var(--muted);letter-spacing:.04em;
+  }
+  .chat-foot .send{
+    width:40px;height:40px;background:var(--ink);border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .25s ease;
+  }
+  .chat-foot .send:hover{background:var(--accent)}
+  .chat-foot .send svg{width:16px;height:16px;stroke:var(--paper)}
+  .chat-foot .send:hover svg{stroke:var(--ink)}
+
+  /* ---------- steps ---------- */
+  .steps{border-top:1px solid var(--ink)}
+  .step-row{
+    display:grid;grid-template-columns:120px 1fr 1.4fr;gap:32px;
+    padding:48px 0;border-bottom:1px solid var(--ink);align-items:baseline;
+  }
+  .step-row .n{
+    font-family:var(--font-display);font-size:clamp(2.4rem,4vw,3.6rem);
+    color:var(--muted);
+  }
+  .step-row h3{font-size:clamp(1.5rem,2.4vw,2rem)}
+  .step-row p{color:#3a3a37;max-width:52ch}
+  @media (max-width:760px){.step-row{grid-template-columns:1fr;gap:12px}}
+
+  /* ---------- author ---------- */
+  .author{background:var(--card)}
+  .author blockquote{
+    font-family:var(--font-display);
+    font-size:clamp(1.8rem,3.6vw,3rem);
+    line-height:1.2;letter-spacing:-0.015em;max-width:22ch;
+  }
+  .author blockquote em{font-style:normal;box-shadow:inset 0 -0.3em 0 var(--accent)}
+  .author .who{
+    margin-top:40px;display:flex;gap:16px;align-items:center;
+    font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  }
+  .author .who::before{content:"";width:48px;height:1px;background:var(--ink)}
+  .author p.note{margin-top:28px;color:#3a3a37;max-width:56ch;font-size:17px}
+
+  /* ---------- contact ---------- */
+  .contact h2{font-size:clamp(2.4rem,5vw,4.2rem);max-width:16ch}
+  .contact form{
+    margin-top:56px;display:flex;gap:8px;max-width:640px;
+  }
+  .contact input{
+    flex:1;background:var(--input);border:1px solid transparent;
+    padding:18px 20px;font-family:var(--font-body);font-size:15px;color:var(--ink);
+    outline:none;transition:border-color .2s ease;
+  }
+  .contact input::placeholder{color:var(--muted);text-transform:uppercase;font-size:12px;letter-spacing:.12em}
+  .contact input:focus{border-color:var(--ink)}
+  @media (max-width:560px){.contact form{flex-direction:column}}
+  .shake{animation:shake .6s ease}
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-4px)}40%{transform:translateX(4px)}
+    60%{transform:translateX(-4px)}80%{transform:translateX(4px)}
+  }
+  .form-note{margin-top:20px;font-size:13px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;font-weight:600}
+  .form-note.ok{color:var(--ok)}
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--ink);padding:40px 0;
+  }
+  .foot-inner{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  footer .small{font-size:13px;color:var(--muted)}
+  footer a{color:var(--ink);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  footer a:hover{background:var(--accent)}
+
+  /* ---------- eye cursor ---------- */
+  .eye-cursor{
+    pointer-events:none;position:fixed;left:0;top:0;z-index:99999;
+    opacity:0;transition:opacity .12s linear;
+  }
+  .eye-cursor.is-visible{opacity:1}
+  .eye-outer{
+    width:38px;height:25px;background:#fff;
+    clip-path:ellipse(50% 50% at 50% 50%);
+    mix-blend-mode:difference;position:relative;
+    transform:translate3d(var(--eye-x,-100px),var(--eye-y,-100px),0);
+    transition:clip-path .16s ease-out;
+  }
+  .eye-inner{
+    position:absolute;width:10px;height:10px;background:#000;border-radius:50%;
+    left:calc(50% + var(--pupil-x,0px));top:calc(50% + var(--pupil-y,0px));
+    transform:translate(-50%,-50%);
+    transition:width .14s ease-out,height .14s ease-out;
+  }
+  .eye-cursor.is-hovered .eye-outer{clip-path:ellipse(50% 42% at 50% 50%)}
+  .eye-cursor.is-hovered .eye-inner{width:15px;height:15px}
+  .eye-cursor.is-blinking .eye-outer{clip-path:ellipse(50% 8% at 50% 50%)}
+  .eye-cursor.is-blinking .eye-inner{opacity:0;transition:none}
+  @media (max-width:991px),(pointer:coarse){
+    .eye-cursor{display:none!important}
+  }
+  body.has-cursor,body.has-cursor a,body.has-cursor button,body.has-cursor input,body.has-cursor label{cursor:none}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="eye-cursor" id="eyeCursor" aria-hidden="true">
+  <div class="eye-outer" id="eyeOuter">
+    <div class="eye-inner" id="eyeInner"></div>
+  </div>
+</div>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#top">Ayatsumira</a>
+    <div class="nav-links">
+      <a href="#skills">Умения</a>
+      <a href="#demo">Демо</a>
+      <a href="#how">Как работает</a>
+      <a href="#author">Автор</a>
+      <a class="btn small" href="#contact">Написать</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-col-empty">
+        <svg class="emblem" viewBox="0 0 220 140" fill="none" aria-hidden="true">
+          <path d="M10 70 C 50 15, 170 15, 210 70 C 170 125, 50 125, 10 70 Z" stroke="#000" stroke-width="2.5"/>
+          <circle cx="110" cy="70" r="34" stroke="#000" stroke-width="2.5"/>
+          <circle cx="110" cy="70" r="14" fill="#000"/>
+          <circle cx="118" cy="62" r="4.5" fill="#F4BB40"/>
+        </svg>
+      </div>
+      <div>
+        <p class="eyebrow">Личный помощник автора</p>
+        <h1>Помощник, который <em>всё помнит</em></h1>
+      </div>
+      <div class="hero-side">
+        <p>Аяцумира следит за задачами, черновиками и дедлайнами — пока автор занимается главным. Напишите, что нужно, и считайте, что сделано.</p>
+        <div class="btn-row">
+          <a class="btn" href="#contact">Поручить задачу</a>
+          <a class="btn ghost" href="#skills">Что умеет</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Что умеет Аяцумира</h2>
+      <p class="eyebrow">04 направления</p>
+    </div>
+    <div class="tiles">
+      <div class="tile">
+        <span class="num">/01</span>
+        <h3>Планирование и напоминания</h3>
+        <p>Расписание дня, встречи, дедлайны по текстам. Аяцумира напомнит заранее — и повторит, если вы не ответили.</p>
+        <span class="tag">Календарь · Дедлайны</span>
+      </div>
+      <div class="tile">
+        <span class="num">/02</span>
+        <h3>Тексты и черновики</h3>
+        <p>Посты, письма, конспекты, пересказы. Назовите тему и тон — получите черновик, который останется поправить.</p>
+        <span class="tag">Черновики · Редактура</span>
+      </div>
+      <div class="tile">
+        <span class="num">/03</span>
+        <h3>Поиск и конспекты</h3>
+        <p>Аяцумира найдёт нужное, прочитает за вас длинное и вернёт короткий конспект со ссылками на источники.</p>
+        <span class="tag">Исследования · Источники</span>
+      </div>
+      <div class="tile">
+        <span class="num">/04</span>
+        <h3>Рутина на автопилоте</h3>
+        <p>Повторяющиеся поручения превращаются в правила: раз в неделю, каждое утро, после каждой встречи.</p>
+        <span class="tag">Автоматизация · Правила</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo" id="demo">
+  <div class="wrap">
+    <div class="demo-grid">
+      <div class="demo-copy">
+        <p class="eyebrow">Живое демо</p>
+        <h2>Спросите — Аяцумира ответит</h2>
+        <p>Так выглядит обычное утро: вы пишете одной строкой, помощник разбирается, уточняет и возвращается с готовым результатом.</p>
+        <div class="status"><span class="dot"></span>Аяцумира онлайн</div>
+      </div>
+      <div class="chat" id="chat">
+        <div class="chat-head">
+          <div class="avatar">А</div>
+          <div>
+            <div class="name">Ayatsumira</div>
+            <div class="sub">личный помощник</div>
+          </div>
+        </div>
+        <div class="chat-body" id="chatBody">
+          <div class="typing" id="typing"><span></span><span></span><span></span></div>
+        </div>
+        <div class="chat-foot">
+          <div class="fake-input">Напишите задачу…</div>
+          <button class="send" aria-label="Отправить">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="steps" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Как это работает</h2>
+      <p class="eyebrow">Три шага</p>
+    </div>
+    <div class="step-row">
+      <span class="n">01</span>
+      <h3>Напишите задачу</h3>
+      <p>Одной строкой, как другу: «напомни про дедлайн», «собери материалы к посту», «что у меня в четверг?»</p>
+    </div>
+    <div class="step-row">
+      <span class="n">02</span>
+      <h3>Аяцумира раскладывает по шагам</h3>
+      <p>Помощник сам уточнит детали, найдёт нужное, составит план и приступит — без длинных инструкций с вашей стороны.</p>
+    </div>
+    <div class="step-row">
+      <span class="n">03</span>
+      <h3>Получите результат</h3>
+      <p>Готовый черновик, конспект или напоминание — вовремя и в одном месте. Останется только сказать «спасибо».</p>
+    </div>
+  </div>
+</section>
+
+<section class="author" id="author">
+  <div class="wrap">
+    <blockquote>«Я пишу. Аяцумира делает <em>всё остальное</em>»</blockquote>
+    <div class="who">Автор проекта Ayatsumira</div>
+    <p class="note">Этот сайт — витрина личного помощника, которого я собрал для себя и своих проектов. Он ведёт мои задачи, помогает с текстами и не даёт рутине съесть время, которое должно уходить на главное.</p>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <p class="eyebrow">Связаться</p>
+    <h2>Оставьте почту — Аяцумира напишет первой</h2>
+    <form id="contactForm" novalidate>
+      <input type="email" id="email" placeholder="Ваша почта" autocomplete="email">
+      <button class="btn" type="submit">Отправить</button>
+    </form>
+    <p class="form-note" id="formNote"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span class="wordmark">Ayatsumira</span>
+    <span class="small">© 2026 · Личный помощник автора</span>
+    <a href="https://github.com/Aspksa/Ayatsumira" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</footer>
+
+<script>
+/* ---------- eye cursor ---------- */
+(function(){
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var cur = document.getElementById('eyeCursor');
+  var outer = document.getElementById('eyeOuter');
+  document.body.classList.add('has-cursor');
+  var tx = -100, ty = -100, x = -100, y = -100, shown = false;
+
+  document.addEventListener('mousemove', function(e){
+    tx = e.clientX; ty = e.clientY;
+    if (!shown){ shown = true; cur.classList.add('is-visible'); }
+  });
+  document.addEventListener('mouseleave', function(){
+    shown = false; cur.classList.remove('is-visible');
+  });
+
+  function loop(){
+    x += (tx - x) * 0.3;
+    y += (ty - y) * 0.3;
+    outer.style.setProperty('--eye-x', (x - 19) + 'px');
+    outer.style.setProperty('--eye-y', (y - 12.5) + 'px');
+    var ox = Math.max(-6, Math.min(6, (tx - x) * 0.4));
+    var oy = Math.max(-4, Math.min(4, (ty - y) * 0.4));
+    outer.style.setProperty('--pupil-x', ox + 'px');
+    outer.style.setProperty('--pupil-y', oy + 'px');
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  function blink(){
+    cur.classList.add('is-blinking');
+    setTimeout(function(){ cur.classList.remove('is-blinking'); }, 160);
+    setTimeout(blink, 2800 + Math.random() * 3200);
+  }
+  setTimeout(blink, 2200);
+
+  document.addEventListener('mouseover', function(e){
+    if (e.target.closest('a, button, input, .tile')) cur.classList.add('is-hovered');
+  });
+  document.addEventListener('mouseout', function(e){
+    if (e.target.closest('a, button, input, .tile')) cur.classList.remove('is-hovered');
+  });
+})();
+
+/* ---------- scripted chat demo ---------- */
+(function(){
+  var body = document.getElementById('chatBody');
+  var typing = document.getElementById('typing');
+  var started = false;
+
+  function msg(cls, html){
+    var el = document.createElement('div');
+    el.className = 'msg ' + cls;
+    el.innerHTML = html;
+    body.insertBefore(el, typing);
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.add('show'); }); });
+  }
+  function type(cb, delay){
+    typing.classList.add('on');
+    setTimeout(function(){ typing.classList.remove('on'); cb(); }, delay || 1400);
+  }
+
+  function run(){
+    msg('user', 'Аяцумира, что у меня сегодня?');
+    setTimeout(function(){
+      type(function(){
+        msg('bot',
+          'Доброе утро! Сегодня три задачи:' +
+          '<div class="line"><span class="sdot busy"></span>12:00 — созвон по новой главе</div>' +
+          '<div class="line"><span class="sdot wait"></span>16:00 — дедлайн по черновику поста</div>' +
+          '<div class="line"><span class="sdot ok"></span>Вечером — свободно, ничего не планировали</div>');
+        setTimeout(function(){
+          msg('user', 'Перенеси созвон на завтра утром');
+          setTimeout(function(){
+            type(function(){
+              msg('bot', 'Готово. Перенесла на завтра, 11:00. Участникам отправила уведомления, в календаре уже обновлено.');
+            }, 1600);
+          }, 900);
+        }, 2200);
+      }, 1500);
+    }, 700);
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting && !started){ started = true; run(); io.disconnect(); }
+    });
+  }, { threshold: 0.35 });
+  io.observe(document.getElementById('chat'));
+})();
+
+/* ---------- contact form ---------- */
+(function(){
+  var form = document.getElementById('contactForm');
+  var email = document.getElementById('email');
+  var note = document.getElementById('formNote');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = email.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
+      email.classList.remove('shake');
+      void email.offsetWidth;
+      email.classList.add('shake');
+      note.textContent = 'Похоже, в адресе опечатка — проверьте и попробуйте ещё раз';
+      note.classList.remove('ok');
+      return;
+    }
+    note.textContent = 'Принято! Аяцумира напишет вам первой';
+    note.classList.add('ok');
+    form.reset();
+  });
+})();
+</script>
+</body>
+</html>

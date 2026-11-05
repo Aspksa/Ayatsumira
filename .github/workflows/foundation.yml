@@ -1,0 +1,29 @@
+name: Foundation checks
+on:
+  push:
+    branches: [main, feature/hermes-integration-foundation]
+  pull_request:
+jobs:
+  static-checks:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required foundation files
+        shell: pwsh
+        run: |
+          $required = @('README.md','Start.bat','.gitignore','.env.example','docs/INTEGRATION.md','docs/SECURITY.md')
+          foreach ($path in $required) { if (!(Test-Path -LiteralPath $path)) { throw "Missing $path" } }
+      - name: Ensure local secrets and data are ignored
+        shell: pwsh
+        run: |
+          $patterns = Get-Content .gitignore -Raw
+          foreach ($item in @('data/','runtime/','backups/','.env')) {
+            if (!$patterns.Contains($item)) { throw "Missing ignore rule: $item" }
+          }
+      - name: Validate launcher syntax without launching Hermes
+        shell: pwsh
+        run: |
+          $bat = Get-Content Start.bat -Raw
+          if (!$bat.Contains('DisableDelayedExpansion')) { throw 'Unsafe delayed expansion' }
+          if (!$bat.Contains('127.0.0.1')) { throw 'Non-local default host' }
+          if ($bat -match 'curl\s+.*\|\s*(bash|powershell)') { throw 'Untrusted bootstrap' }

@@ -1,0 +1,17 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*credentials*.json
+*secrets*.json
+data/
+runtime/
+backups/
+logs/
+app/hermes-webui/
+app/hermes-agent/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.sqlite
+*.db
